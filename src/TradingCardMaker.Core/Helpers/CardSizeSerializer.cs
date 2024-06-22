@@ -1,4 +1,4 @@
-﻿namespace TradingCardMaker.Models.Helpers.Serializers;
+﻿namespace TradingCardMaker.Core.Helpers;
 
 using Drawing;
 
@@ -22,7 +22,7 @@ internal class CardSizeSerializer : JsonConverter<CardUnit>
         var type = node["type"]?.ToString();
         if (type is null) return CardUnit.Zero;
 
-        if (!Enum.TryParse<CardUnitType>(type, true, out var cardUnit)) 
+        if (!Enum.TryParse<CardUnitType>(type, true, out var cardUnit))
             cardUnit = CardUnitType.Pixel;
 
         return new CardUnit(cardUnit, unit.Value);

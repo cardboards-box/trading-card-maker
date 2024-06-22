@@ -1,17 +1,12 @@
 ﻿namespace TradingCardMaker.Models;
 
-using Drawing;
+using Core.Drawing;
 
 /// <summary>
 /// Represents all of the designs available for a trading card
 /// </summary>
 public class CardSet
 {
-    private CardUnit? _width;
-    private CardUnit? _height;
-    private CardUnit? _fontSize;
-    private CardUnitContextData? _context;
-
     /// <summary>
     /// The name of the card set
     /// </summary>
@@ -28,43 +23,19 @@ public class CardSet
     /// The width of the card (cannot be relative or percentage)
     /// </summary>
     [JsonPropertyName("width")]
-    public required CardUnit Width
-    {
-        get => _width ?? CardUnit.Zero;
-        set { _width = value; ClearContext(); }
-    }
+    public required CardUnit Width { get; set; }
 
     /// <summary>
     /// The height of the card (cannot be relative or percentage)
     /// </summary>
     [JsonPropertyName("height")]
-    public required CardUnit Height
-    {
-        get => _height ?? CardUnit.Zero;
-        set { _height = value; ClearContext(); }
-    }
+    public required CardUnit Height { get; set; }
 
     /// <summary>
     /// The default font size for the card (cannot be relative or percentage)
     /// </summary>
     [JsonPropertyName("fontSize")]
-    public required CardUnit FontSize
-    {
-        get => _fontSize ?? CardUnit.Zero;
-        set { _fontSize = value; ClearContext(); }
-    }
-
-    /// <summary>
-    /// The render pipeline for the back of the card
-    /// </summary>
-    [JsonPropertyName("back")]
-    public CardFace Back { get; set; } = new();
-
-    /// <summary>
-    /// The different types of render pipelines for the front of the card
-    /// </summary>
-    [JsonPropertyName("variants")]
-    public Dictionary<string, CardFace> Variants { get; set; } = [];
+    public required CardUnit FontSize { get; set; }
 
     /// <summary>
     /// The resources available to the card
@@ -73,31 +44,26 @@ public class CardSet
     public CardResources Resources { get; set; } = new();
 
     /// <summary>
-    /// Clears the context for the card, so that it is recalculated on next request
+    /// The path to the template representing the back face of the card
     /// </summary>
-    public void ClearContext()
-    {
-        _context = null;
-    }
+    [JsonPropertyName("back")]
+    public required string Back { get; set; }
 
     /// <summary>
-    /// Gets the cached unit context for the card
+    /// The IDs and paths to the templates representing the various variants of the font face of the card
     /// </summary>
-    /// <returns>The unit context for card roots</returns>
-    /// <exception cref="NullReferenceException">Thrown if width, height, or font size is null</exception>
-    public CardUnitContextData GetContext()
+    [JsonPropertyName("variants")]
+    public Dictionary<string, string> Variants { get; set; } = [];
+
+    /// <summary>
+    /// Gets the root size context for the card set
+    /// </summary>
+    /// <returns>The size context for the card's bounds</returns>
+    public SizeContext GetContext()
     {
-        if (_context is not null) return _context.Value;
-
-        if (_width is null || _height is null || _fontSize is null)
-            throw new NullReferenceException("Width, height, or font size is missing");
-
-        var tempRoot = new CardUnitContextData(null, null, null);
-        var tempCtx = new CardUnitContext(tempRoot, null);
-
-        var width = _width.Value.Pixels(tempCtx, true);
-        var height = _height.Value.Pixels(tempCtx, false);
-        var fontSize = _fontSize.Value.Pixels(tempCtx, null);
-        return (_context = new CardUnitContextData(width, height, fontSize)).Value;
+        var width = Width.Pixels();
+        var height = Height.Pixels();
+        var fontSize = FontSize.Pixels();
+        return SizeContext.ForRoot(width, height, fontSize);
     }
 }

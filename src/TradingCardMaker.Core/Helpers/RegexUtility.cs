@@ -1,4 +1,4 @@
-﻿namespace TradingCardMaker.Models.Helpers;
+﻿namespace TradingCardMaker.Core.Helpers;
 
 /// <summary>
 /// A utility class for working with regular expressions

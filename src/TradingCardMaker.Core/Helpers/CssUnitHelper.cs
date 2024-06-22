@@ -1,4 +1,4 @@
-﻿namespace TradingCardMaker.Models.Helpers;
+﻿namespace TradingCardMaker.Core.Helpers;
 
 using Drawing;
 
@@ -82,12 +82,11 @@ public static class CssUnitHelper
     /// <returns>The pixel equivalent of the given size</returns>
     /// <exception cref="NullReferenceException">Thrown if the context is missing a required value</exception>
     /// <exception cref="ArgumentException">Thrown if the size is a percentage and the context is not known</exception>
-    public static int GetPixels(CardUnit size, CardUnitContext context, bool? isWidth)
+    public static int GetPixels(CardUnit size, SizeContext? context, bool? isWidth)
     {
         if (size.Value == 0) return 0;
 
-        int RootHeight() => context.Root.Height ?? throw new NullReferenceException("Root Height in this context is missing");
-        int RootWidth() => context.Root.Width ?? throw new NullReferenceException("Root Width in this context is missing");
+        SizeContext NotNullContext() => context ?? throw new NullReferenceException(ERROR_PERCENT);
 
         var value = size.Type switch
         {
@@ -98,11 +97,11 @@ public static class CssUnitHelper
             CardUnitType.Inch => InchToPixel(size.Value),
             CardUnitType.Pica => PicaToPixel(size.Value),
             CardUnitType.Point => PointToPixel(size.Value),
-            CardUnitType.RelativePercentage => RelativePercentageToPixel(size.Value, context.Width, context.Height),
-            CardUnitType.Em => EmToPixel(size.Value, context.FontSize),
-            CardUnitType.ViewHeight => PercentToPixel(size.Value, null, RootHeight(), false),
-            CardUnitType.ViewWidth => PercentToPixel(size.Value, RootWidth(), null, true),
-            CardUnitType.Percentage => PercentToPixel(size.Value, context.Width, context.Height, isWidth),
+            CardUnitType.RelativePercentage => RelativePercentageToPixel(size.Value, NotNullContext().Width, NotNullContext().Height),
+            CardUnitType.Em => EmToPixel(size.Value, NotNullContext().FontSize),
+            CardUnitType.ViewHeight => PercentToPixel(size.Value, null, NotNullContext().Root.Height, false),
+            CardUnitType.ViewWidth => PercentToPixel(size.Value, NotNullContext().Root.Width, null, true),
+            CardUnitType.Percentage => PercentToPixel(size.Value, NotNullContext().Width, NotNullContext().Height, isWidth),
             _ => 0,
         };
 
@@ -164,8 +163,8 @@ public static class CssUnitHelper
     {
         if (isWidth is null) throw new ArgumentException(ERROR_PERCENT);
 
-        if ((isWidth.Value && width is null) ||
-            (!isWidth.Value && height is null)) throw new ArgumentException(ERROR_PERCENT);
+        if (isWidth.Value && width is null ||
+            !isWidth.Value && height is null) throw new ArgumentException(ERROR_PERCENT);
 
         return value / 100 * (isWidth.Value ? width!.Value : height!.Value);
     }
@@ -190,41 +189,11 @@ public static class CssUnitHelper
     /// <param name="value">The number of ems</param>
     /// <param name="fontSize">The size of the font in the current context</param>
     /// <returns>The equivalent number of pixels</returns>
-    public static double EmToPixel(double value, int? fontSize) 
+    public static double EmToPixel(double value, int? fontSize)
     {
         if (fontSize is null) throw new ArgumentException("Cannot use em measurement without a font size");
 
         return value * fontSize.Value;
-    }
-
-    /// <summary>
-    /// Converts the given input to a <see cref="CardRectangle"/>
-    /// </summary>
-    /// <param name="input">The string representation of the rectangle</param>
-    /// <returns>The parsed <see cref="CardRectangle"/></returns>
-    /// <exception cref="ArgumentException">Thrown if the card rectangle doesn't include 4 entries</exception>
-    public static CardRectangle ParseRectangle(string input)
-    {
-        var parts = input.Split(',', StringSplitOptions.RemoveEmptyEntries)
-            .Select(CardUnit.Parse)
-            .ToArray();
-
-        if (parts.Length != 4) throw new ArgumentException("Rectangle must have 4 values");
-
-        return new CardRectangle(parts[0], parts[1], parts[2], parts[3]);
-    }
-
-    /// <summary>
-    /// Converts the given <see cref="CardRectangle"/> to a string
-    /// </summary>
-    /// <param name="rect">The rectangle to serialize</param>
-    /// <returns>The string serialized version of the rectangle</returns>
-    public static string SerializeRectangle(CardRectangle rect)
-    {
-        var parts = new[] { rect.X, rect.Y, rect.Width, rect.Height }
-            .Select(t => t.Serialize());
-
-        return string.Join(",", parts);
     }
 
     /// <summary>

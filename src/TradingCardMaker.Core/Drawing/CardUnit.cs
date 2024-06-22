@@ -1,7 +1,6 @@
-﻿namespace TradingCardMaker.Models.Drawing;
+﻿namespace TradingCardMaker.Core.Drawing;
 
 using Helpers;
-using Helpers.Serializers;
 
 /// <summary>
 /// Represents a unit of measurement of something on a card
@@ -37,9 +36,9 @@ public record struct CardUnit(
     /// Gets the equivalent number of pixels for this unit of measurement
     /// </summary>
     /// <param name="context">The context of the parent</param>
-    /// <param name="isWidth">Whether or not the unit is for widths or heights (or null if the context isn't known)</param>
+    /// <param name="isWidth">Whether or not the unit is for widths/x axis or heights/y axis (or null if the context isn't known)</param>
     /// <returns>The number of pixels</returns>
-    public readonly int Pixels(CardUnitContext context, bool? isWidth) => CssUnitHelper.GetPixels(this, context, isWidth);
+    public readonly int Pixels(SizeContext? context = null, bool? isWidth = null) => CssUnitHelper.GetPixels(this, context, isWidth);
 
     /// <summary>
     /// Converts the unit of measurement to a string

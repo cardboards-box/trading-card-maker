@@ -1,7 +1,6 @@
 ﻿namespace TradingCardMaker.Tests.ModelsTests;
 
-using Models.Drawing;
-using Models.Helpers;
+using Core.Drawing;
 
 [TestClass]
 public class CardSizeUtilityTests : TestSetup
@@ -62,9 +61,9 @@ public class CardSizeUtilityTests : TestSetup
     [TestMethod]
     public void CalculatePixelTests()
     {
-        var root = new CardUnitContextData(200, 100, 12);
-        var parent = new CardUnitContextData(100, 50, 15);
-        var context = new CardUnitContext(root, parent);
+        var root = new SizeContext(0, 0, 200, 100, 15);
+
+        var context = root.GetContext(0, 0, 100, 50);
 
         (string test, int output, bool? isWidth)[] tests =
         [

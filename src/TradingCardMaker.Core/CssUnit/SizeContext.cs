@@ -1,4 +1,4 @@
-﻿namespace TradingCardMaker.Core;
+﻿namespace TradingCardMaker.Core.CssUnit;
 
 /// <summary>
 /// Represents the context for a size

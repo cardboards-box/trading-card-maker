@@ -1,36 +1,34 @@
-﻿namespace TradingCardMaker.Core;
-
-using Helpers;
+﻿namespace TradingCardMaker.Core.CssUnit;
 
 /// <summary>
 /// Represents a unit of measurement of something on a card
 /// </summary>
 /// <param name="Type">The type of unit of measurement</param>
 /// <param name="Value">The value of the measurement</param>
-[JsonConverter(typeof(CardSizeSerializer))]
-public record struct CardUnit(
-    [property: JsonPropertyName("type")] CardUnitType Type,
+[JsonConverter(typeof(CssUnitSerializer))]
+public record struct CssUnit(
+    [property: JsonPropertyName("type")] CssUnitType Type,
     [property: JsonPropertyName("value")] double Value)
 {
     /// <summary>
     /// A size of zero
     /// </summary>
-    public static CardUnit Zero { get; } = new(CardUnitType.Pixel, 0);
+    public static CssUnit Zero { get; } = new(CssUnitType.Pixel, 0);
 
     /// <summary>
     /// 100% of the parent size
     /// </summary>
-    public static CardUnit Fill { get; } = new(CardUnitType.Percentage, 100);
+    public static CssUnit Fill { get; } = new(CssUnitType.Percentage, 100);
 
     /// <summary>
     /// 100% of the parent width
     /// </summary>
-    public static CardUnit FillWidth { get; } = new(CardUnitType.ViewWidth, 100);
+    public static CssUnit FillWidth { get; } = new(CssUnitType.ViewWidth, 100);
 
     /// <summary>
     /// 100% of the parent height
     /// </summary>
-    public static CardUnit FillHeight { get; } = new(CardUnitType.ViewHeight, 100);
+    public static CssUnit FillHeight { get; } = new(CssUnitType.ViewHeight, 100);
 
     /// <summary>
     /// Gets the equivalent number of pixels for this unit of measurement
@@ -57,17 +55,17 @@ public record struct CardUnit(
     /// </summary>
     /// <param name="input">The string version of the measurement</param>
     /// <returns>The parsed card size</returns>
-    public static CardUnit Parse(string input) => CssUnitHelper.ParseUnit(input);
+    public static CssUnit Parse(string input) => CssUnitHelper.ParseUnit(input);
 
     /// <summary>
     /// Converts the unit of measurement to a string
     /// </summary>
     /// <param name="size">The unit of measurement</param>
-    public static implicit operator string(CardUnit size) => size.Serialize();
+    public static implicit operator string(CssUnit size) => size.Serialize();
 
     /// <summary>
     /// Converts the string to a unit of measurement
     /// </summary>
     /// <param name="input">The string version of the measurement</param>
-    public static implicit operator CardUnit(string input) => Parse(input);
+    public static implicit operator CssUnit(string input) => Parse(input);
 }

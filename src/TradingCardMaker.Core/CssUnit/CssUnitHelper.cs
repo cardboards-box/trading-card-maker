@@ -1,4 +1,4 @@
-﻿namespace TradingCardMaker.Core.Helpers;
+﻿namespace TradingCardMaker.Core.CssUnit;
 
 /// <summary>
 /// Helper utility for css unit operations
@@ -16,54 +16,54 @@ public static class CssUnitHelper
     {
         return _units ??=
         [
-            new CssUnit(CardUnitType.Centimeter, "cm"),
-            new CssUnit(CardUnitType.Millimeter, "mm"),
-            new CssUnit(CardUnitType.QuarterMillimeter, "q"),
-            new CssUnit(CardUnitType.Inch, "in"),
-            new CssUnit(CardUnitType.Pica, "pc"),
-            new CssUnit(CardUnitType.Point, "pt"),
-            new CssUnit(CardUnitType.Pixel, "px"),
-            new CssUnit(CardUnitType.Percentage, "%"),
-            new CssUnit(CardUnitType.Em, "em"),
-            new CssUnit(CardUnitType.ViewHeight, "vh"),
-            new CssUnit(CardUnitType.ViewWidth, "vw"),
-            new CssUnit(CardUnitType.RelativePercentage, "rp")
+            new CssUnit(CssUnitType.Centimeter, "cm"),
+            new CssUnit(CssUnitType.Millimeter, "mm"),
+            new CssUnit(CssUnitType.QuarterMillimeter, "q"),
+            new CssUnit(CssUnitType.Inch, "in"),
+            new CssUnit(CssUnitType.Pica, "pc"),
+            new CssUnit(CssUnitType.Point, "pt"),
+            new CssUnit(CssUnitType.Pixel, "px"),
+            new CssUnit(CssUnitType.Percentage, "%"),
+            new CssUnit(CssUnitType.Em, "em"),
+            new CssUnit(CssUnitType.ViewHeight, "vh"),
+            new CssUnit(CssUnitType.ViewWidth, "vw"),
+            new CssUnit(CssUnitType.RelativePercentage, "rp")
         ];
     }
 
     /// <summary>
-    /// Converts the given string to a <see cref="CardUnit"/>
+    /// Converts the given string to a <see cref="Core.CssUnit.CssUnit"/>
     /// </summary>
     /// <param name="input">The unit of measurement</param>
-    /// <returns>The <see cref="CardUnit"/> representing the unit of measurement</returns>
+    /// <returns>The <see cref="Core.CssUnit.CssUnit"/> representing the unit of measurement</returns>
     /// <exception cref="ArgumentNullException">Thrown if the <paramref name="input"/> is null or empty</exception>
     /// <exception cref="CssUnitParserException">Thrown if the <paramref name="input"/> is not a valid unit of measurement</exception>
-    public static CardUnit ParseUnit(string input)
+    public static Core.CssUnit.CssUnit ParseUnit(string input)
     {
         if (string.IsNullOrEmpty(input)) throw new ArgumentNullException(nameof(input));
 
         input = input.Trim().ToLower();
 
-        if (input == "0") return CardUnit.Zero;
+        if (input == "0") return Core.CssUnit.CssUnit.Zero;
 
         input = RegexUtility.CssUnitFilter(input);
-        if (string.IsNullOrEmpty(input)) return CardUnit.Zero;
+        if (string.IsNullOrEmpty(input)) return Core.CssUnit.CssUnit.Zero;
 
         var (value, unit) = RegexUtility.CssUnitParse(input);
-        if (string.IsNullOrEmpty(unit)) return new CardUnit(CardUnitType.Pixel, value);
+        if (string.IsNullOrEmpty(unit)) return new Core.CssUnit.CssUnit(CssUnitType.Pixel, value);
 
         var unitMatch = Units().FirstOrDefault(u => u.Symbol == unit);
-        if (unitMatch is null) return new CardUnit(CardUnitType.Pixel, value);
+        if (unitMatch is null) return new Core.CssUnit.CssUnit(CssUnitType.Pixel, value);
 
-        return new CardUnit(unitMatch.Type, value);
+        return new Core.CssUnit.CssUnit(unitMatch.Type, value);
     }
 
     /// <summary>
-    /// Serializes the given <see cref="CardUnit"/> to a string
+    /// Serializes the given <see cref="Core.CssUnit.CssUnit"/> to a string
     /// </summary>
     /// <param name="size">The unit of measurement</param>
     /// <returns>The string representation of the size</returns>
-    public static string SerializeUnit(CardUnit size)
+    public static string SerializeUnit(Core.CssUnit.CssUnit size)
     {
         var unit = Units().FirstOrDefault(u => u.Type == size.Type);
         if (unit is null) return $"{size.Value}px";
@@ -72,7 +72,7 @@ public static class CssUnitHelper
     }
 
     /// <summary>
-    /// Converts the <see cref="CardUnit"/> into the pixel equivalent
+    /// Converts the <see cref="Core.CssUnit.CssUnit"/> into the pixel equivalent
     /// </summary>
     /// <param name="size">The unit to convert</param>
     /// <param name="context">The context of the size request</param>
@@ -80,7 +80,7 @@ public static class CssUnitHelper
     /// <returns>The pixel equivalent of the given size</returns>
     /// <exception cref="NullReferenceException">Thrown if the context is missing a required value</exception>
     /// <exception cref="ArgumentException">Thrown if the size is a percentage and the context is not known</exception>
-    public static int GetPixels(CardUnit size, SizeContext? context, bool? isWidth)
+    public static int GetPixels(Core.CssUnit.CssUnit size, SizeContext? context, bool? isWidth)
     {
         if (size.Value == 0) return 0;
 
@@ -88,18 +88,18 @@ public static class CssUnitHelper
 
         var value = size.Type switch
         {
-            CardUnitType.Pixel => size.Value,
-            CardUnitType.Centimeter => CentimeterToPixel(size.Value),
-            CardUnitType.Millimeter => MillimeterToPixel(size.Value),
-            CardUnitType.QuarterMillimeter => QuarterMillimeterToPixel(size.Value),
-            CardUnitType.Inch => InchToPixel(size.Value),
-            CardUnitType.Pica => PicaToPixel(size.Value),
-            CardUnitType.Point => PointToPixel(size.Value),
-            CardUnitType.RelativePercentage => RelativePercentageToPixel(size.Value, NotNullContext().Width, NotNullContext().Height),
-            CardUnitType.Em => EmToPixel(size.Value, NotNullContext().FontSize),
-            CardUnitType.ViewHeight => PercentToPixel(size.Value, null, NotNullContext().Root.Height, false),
-            CardUnitType.ViewWidth => PercentToPixel(size.Value, NotNullContext().Root.Width, null, true),
-            CardUnitType.Percentage => PercentToPixel(size.Value, NotNullContext().Width, NotNullContext().Height, isWidth),
+            CssUnitType.Pixel => size.Value,
+            CssUnitType.Centimeter => CentimeterToPixel(size.Value),
+            CssUnitType.Millimeter => MillimeterToPixel(size.Value),
+            CssUnitType.QuarterMillimeter => QuarterMillimeterToPixel(size.Value),
+            CssUnitType.Inch => InchToPixel(size.Value),
+            CssUnitType.Pica => PicaToPixel(size.Value),
+            CssUnitType.Point => PointToPixel(size.Value),
+            CssUnitType.RelativePercentage => RelativePercentageToPixel(size.Value, NotNullContext().Width, NotNullContext().Height),
+            CssUnitType.Em => EmToPixel(size.Value, NotNullContext().FontSize),
+            CssUnitType.ViewHeight => PercentToPixel(size.Value, null, NotNullContext().Root.Height, false),
+            CssUnitType.ViewWidth => PercentToPixel(size.Value, NotNullContext().Root.Width, null, true),
+            CssUnitType.Percentage => PercentToPixel(size.Value, NotNullContext().Width, NotNullContext().Height, isWidth),
             _ => 0,
         };
 
@@ -200,6 +200,6 @@ public static class CssUnitHelper
     /// <param name="Type">The type of unit</param>
     /// <param name="Symbol">The symbol that indicates the unit</param>
     public record class CssUnit(
-        CardUnitType Type,
+        CssUnitType Type,
         string Symbol);
 }

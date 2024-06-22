@@ -1,6 +1,6 @@
 ﻿namespace TradingCardMaker.Models;
 
-using Core;
+using Core.CssUnit;
 
 /// <summary>
 /// Represents all of the designs available for a trading card
@@ -23,19 +23,19 @@ public class CardSet
     /// The width of the card (cannot be relative or percentage)
     /// </summary>
     [JsonPropertyName("width")]
-    public required CardUnit Width { get; set; }
+    public required CssUnit Width { get; set; }
 
     /// <summary>
     /// The height of the card (cannot be relative or percentage)
     /// </summary>
     [JsonPropertyName("height")]
-    public required CardUnit Height { get; set; }
+    public required CssUnit Height { get; set; }
 
     /// <summary>
     /// The default font size for the card (cannot be relative or percentage)
     /// </summary>
     [JsonPropertyName("fontSize")]
-    public required CardUnit FontSize { get; set; }
+    public required CssUnit FontSize { get; set; }
 
     /// <summary>
     /// The resources available to the card

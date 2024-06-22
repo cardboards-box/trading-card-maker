@@ -1,6 +1,6 @@
 ﻿namespace TradingCardMaker.Models;
 
-using Core.Drawing;
+using Core;
 
 /// <summary>
 /// Represents all of the designs available for a trading card

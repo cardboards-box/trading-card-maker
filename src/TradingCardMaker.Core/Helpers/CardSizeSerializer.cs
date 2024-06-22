@@ -1,7 +1,5 @@
 ﻿namespace TradingCardMaker.Core.Helpers;
 
-using Drawing;
-
 internal class CardSizeSerializer : JsonConverter<CardUnit>
 {
     public override CardUnit Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

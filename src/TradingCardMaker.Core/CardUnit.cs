@@ -1,4 +1,4 @@
-﻿namespace TradingCardMaker.Core.Drawing;
+﻿namespace TradingCardMaker.Core;
 
 using Helpers;
 

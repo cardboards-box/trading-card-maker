@@ -1,7 +1,5 @@
 ﻿namespace TradingCardMaker.Core.Helpers;
 
-using Drawing;
-
 /// <summary>
 /// Helper utility for css unit operations
 /// </summary>

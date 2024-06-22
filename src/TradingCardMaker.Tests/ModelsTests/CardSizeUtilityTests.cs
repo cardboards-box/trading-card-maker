@@ -1,6 +1,6 @@
 ﻿namespace TradingCardMaker.Tests.ModelsTests;
 
-using Core.Drawing;
+using Core;
 
 [TestClass]
 public class CardSizeUtilityTests : TestSetup

@@ -1,4 +1,4 @@
-﻿namespace TradingCardMaker.Core.Drawing;
+﻿namespace TradingCardMaker.Core;
 
 /// <summary>
 /// Represents a unit of measurement for a card. (css-units)

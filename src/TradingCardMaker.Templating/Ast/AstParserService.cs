@@ -2,6 +2,8 @@
 
 namespace TradingCardMaker.Templating.Ast;
 
+using Core;
+
 /// <summary>
 /// A service for parsing templates in to abstract syntax tree elements
 /// </summary>
@@ -108,7 +110,9 @@ internal class AstParserService : IAstParserService
                 continue;
             }
 
-            if (attribute.QuoteType == AttributeValueQuote.None &&
+            var hasEqual = attribute.GetPrivateFieldValue<HtmlAttribute, bool>("_hasEqual");
+
+            if (!hasEqual &&
                 string.IsNullOrEmpty(value))
             {
                 yield return new AstAttribute
@@ -142,6 +146,9 @@ internal class AstParserService : IAstParserService
 
             var element = new AstElement
             {
+                StreamPosition = node.StreamPosition,
+                Line = node.Line,
+                Column = node.LinePosition,
                 Tag = name,
                 Type = type,
                 Value = value,

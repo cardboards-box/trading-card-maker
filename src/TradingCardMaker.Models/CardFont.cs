@@ -1,5 +1,7 @@
 ﻿namespace TradingCardMaker.Models;
 
+using Core.IO;
+
 /// <summary>
 /// A font family used by the card
 /// </summary>
@@ -15,5 +17,5 @@ public class CardFont
     /// The source URL of the font
     /// </summary>
     [JsonPropertyName("source")]
-    public required string Source { get; set; }
+    public required IOPath Source { get; set; }
 }

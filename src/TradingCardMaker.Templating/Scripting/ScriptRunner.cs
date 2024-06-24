@@ -59,10 +59,22 @@ public class ScriptRunner(
     /// <exception cref="ArgumentException">Thrown when a module with the same name already exists</exception>
     public ScriptRunner AddModule(string name, string code)
     {
+        return AddModule(name, Prepare(code));
+    }
+
+    /// <summary>
+    /// Add a module to the script engine
+    /// </summary>
+    /// <param name="name">The name of the module (used in the import statement)</param>
+    /// <param name="module">The code of the module</param>
+    /// <returns>The current instance of the script runner for method chaining</returns>
+    /// <exception cref="ArgumentException">Thrown when a module with the same name already exists</exception>
+    public ScriptRunner AddModule(string name, Prepared<Module> module)
+    {
         if (ModuleExists(name))
             throw new ArgumentException($"Module with name {name} already exists");
 
-        _modules.Add(name, Engine.PrepareModule(code));
+        _modules.Add(name, module);
         return this;
     }
 
@@ -77,17 +89,8 @@ public class ScriptRunner(
     /// <exception cref="FileNotFoundException">Thrown when the file doesn't exist</exception>
     public ScriptRunner LoadModule(string filePath, string? name = null)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            name = Path.GetFileNameWithoutExtension(filePath);
-
-        if (ModuleExists(name))
-            throw new ArgumentException($"Module with name {name} already exists");
-
-        if (!File.Exists(filePath))
-            throw new FileNotFoundException("Module file not found", Path.GetFullPath(filePath));
-
-        var code = File.ReadAllText(filePath);
-        return AddModule(name, code);
+        var (moduleName, code) = PrepareFile(filePath, name);
+        return AddModule(moduleName, code);
     }
 
     /// <summary>
@@ -110,12 +113,23 @@ public class ScriptRunner(
     /// <summary>
     /// Adds the main script to the engine.
     /// </summary>
-    /// <param name="code"></param>
+    /// <param name="code">The main script</param>
     /// <returns>The current instance of the script runner for method chaining</returns>
     /// <remarks>This should contain a `main(args[])` entry point</remarks>
     public ScriptRunner SetScript(string code)
     {
-        _main = Engine.PrepareModule(code);
+        return SetScript(Prepare(code));
+    }
+
+    /// <summary>
+    /// Adds the main script to the engine.
+    /// </summary>
+    /// <param name="script">The main script</param>
+    /// <returns>The current instance of the script runner for method chaining</returns>
+    /// <remarks>This should contain a `main(args[])` entry point</remarks>
+    public ScriptRunner SetScript(Prepared<Module> script)
+    {
+        _main = script;
         return this;
     }
 
@@ -243,5 +257,46 @@ public class ScriptRunner(
         engine.Advanced.ProcessTasks();
         //Massage the result to either be null or the result of the return value
         return result == JsValue.Undefined ? null : result;
+    }
+
+    /// <summary>
+    /// Prepares the script for module execution
+    /// </summary>
+    /// <param name="code">The code to prepare</param>
+    /// <returns>The prepared module</returns>
+    public static Prepared<Module> Prepare(string code)
+    {
+        return Engine.PrepareModule(code);
+    }
+
+    /// <summary>
+    /// Prepares the script for module execution from a file
+    /// </summary>
+    /// <param name="path">The path to load the code from</param>
+    /// <param name="name">The name of the module</param>
+    /// <returns>The prepared module</returns>
+    public static (string name, Prepared<Module> module) PrepareFile(string path, string? name = null)
+    {
+        var task = PrepareFileAsync(path, name);
+        task.Wait();
+        return task.Result;
+    }
+
+    /// <summary>
+    /// Prepares the script for module execution from a file
+    /// </summary>
+    /// <param name="path">The path to load the code from</param>
+    /// <param name="name">The name of the module</param>
+    /// <returns>The prepared module</returns>
+    public static async Task<(string name, Prepared<Module> module)> PrepareFileAsync(string path, string? name = null)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            name = Path.GetFileNameWithoutExtension(path);
+
+        if (!File.Exists(path))
+            throw new FileNotFoundException("Module file not found", Path.GetFullPath(path));
+
+        var code = await File.ReadAllTextAsync(path);
+        return (name, Prepare(code));
     }
 }

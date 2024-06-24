@@ -6,6 +6,21 @@
 public class AstElement
 {
     /// <summary>
+    /// The position in the stream where this element occurs
+    /// </summary>
+    public required int StreamPosition { get; set; }
+
+    /// <summary>
+    /// The line number this element occurs on
+    /// </summary>
+    public required int Line { get; set; }
+
+    /// <summary>
+    /// The column number on the <see cref="Line"/> this element occurs on
+    /// </summary>
+    public required int Column { get; set; }
+
+    /// <summary>
     /// The tag of the element
     /// </summary>
     public required string Tag { get; set; }
@@ -29,4 +44,13 @@ public class AstElement
     /// The text content of the element (only applicable if <see cref="Type"/> is <see cref="AstElementType.Text"/>)"/>
     /// </summary>
     public string? Value { get; set; }
+
+    /// <summary>
+    /// Prints out the elements position in the template
+    /// </summary>
+    /// <returns>The elements position</returns>
+    public string ExceptionString()
+    {
+        return $"Tag: {Tag}. Pos: {StreamPosition}. Line: {Line}. Col: {Column}.";
+    }
 }

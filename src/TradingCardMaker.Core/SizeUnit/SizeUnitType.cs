@@ -1,9 +1,9 @@
-﻿namespace TradingCardMaker.Core.CssUnit;
+﻿namespace TradingCardMaker.Core.SizeUnit;
 
 /// <summary>
 /// Represents a unit of measurement for a card. (css-units)
 /// </summary>
-public enum CssUnitType
+public enum SizeUnitType
 {
     /// <summary>
     /// Pixel on the screen

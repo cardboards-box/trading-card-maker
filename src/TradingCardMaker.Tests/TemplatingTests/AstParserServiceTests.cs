@@ -11,7 +11,7 @@ public class AstParserServiceTests : TestSetup
         var service = GetService<IAstParserService>();
 
         const string TEMPLATE = @"<template>
-    <clear color=""transparent"" />
+    <clear color=""transparent"" do />
     <rectangle 
         x=""0"" y=""0"" width=""100vw"" height=""100vh"" 
         radius=""10px"" fill=""#000"" 
@@ -79,6 +79,16 @@ export default () => {
         var template = elements[0];
         Assert.AreEqual("template", template.Tag, "Template Element Name");
         Assert.AreEqual(6, template.Children.Length, "Template Elements Count");
+
+        var clear = template.Children[0];
+        Assert.AreEqual("clear", clear.Tag, "Clear Element Name");
+        Assert.AreEqual(2, clear.Attributes.Length, "Clear Attributes Count");
+        var color = clear.Attributes[0];
+        Assert.AreEqual("color", color.Name, "Clear attribute color name");
+        Assert.AreEqual("transparent", color.Value, "Clear attribute color value");
+        var @do = clear.Attributes[1];
+        Assert.AreEqual("do", @do.Name, "Clear attribute do name");
+        Assert.AreEqual(AstAttributeType.BooleanTrue, @do.Type, "Clear attribute do type");
 
         var text = template.Children[3];
         Assert.AreEqual("text", text.Tag, "Text Element Name");

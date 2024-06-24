@@ -1,33 +1,32 @@
 ﻿namespace TradingCardMaker.Tests.ModelsTests;
 
-using Core;
-using TradingCardMaker.Core.CssUnit;
+using Core.SizeUnit;
 
 [TestClass]
-public class CssUnitUtilityTests : TestSetup
+public class SizeUnitUtilityTests : TestSetup
 {
     [TestMethod]
     public void DeserializeTests()
     {
-        (string test, CssUnit output)[] tests = 
+        (string test, SizeUnit output)[] tests = 
         [
-            ("-2.3cm", new(CssUnitType.Centimeter, -2.3)),
-            ("3.3mm", new(CssUnitType.Millimeter, 3.3)),
-            ("1q", new(CssUnitType.QuarterMillimeter, 1)),
-            ("00100.000in", new(CssUnitType.Inch, 100)),
-            ("1.2pc", new(CssUnitType.Pica, 1.2)),
-            ("1.2pt", new(CssUnitType.Point, 1.2)),
-            ("1.2%", new(CssUnitType.Percentage, 1.2)),
-            ("1.2em", new(CssUnitType.Em, 1.2)),
-            ("1.2vh", new(CssUnitType.ViewHeight, 1.2)),
-            ("1.2vw", new(CssUnitType.ViewWidth, 1.2)),
-            ("1.2rp", new(CssUnitType.RelativePercentage, 1.2)),
-            ("1.2", new(CssUnitType.Pixel, 1.2))
+            ("-2.3cm", new(SizeUnitType.Centimeter, -2.3)),
+            ("3.3mm", new(SizeUnitType.Millimeter, 3.3)),
+            ("1q", new(SizeUnitType.QuarterMillimeter, 1)),
+            ("00100.000in", new(SizeUnitType.Inch, 100)),
+            ("1.2pc", new(SizeUnitType.Pica, 1.2)),
+            ("1.2pt", new(SizeUnitType.Point, 1.2)),
+            ("1.2%", new(SizeUnitType.Percentage, 1.2)),
+            ("1.2em", new(SizeUnitType.Em, 1.2)),
+            ("1.2vh", new(SizeUnitType.ViewHeight, 1.2)),
+            ("1.2vw", new(SizeUnitType.ViewWidth, 1.2)),
+            ("1.2rp", new(SizeUnitType.RelativePercentage, 1.2)),
+            ("1.2", new(SizeUnitType.Pixel, 1.2))
         ];
 
         foreach (var (test, output) in tests)
         {
-            var parsed = CssUnit.Parse(test);
+            var parsed = SizeUnit.Parse(test);
             Assert.AreEqual(output.Type, parsed.Type, $"Type Test: {test}");
             Assert.AreEqual(output.Value, parsed.Value, $"Value Test: {test}");
         }
@@ -36,20 +35,20 @@ public class CssUnitUtilityTests : TestSetup
     [TestMethod]
     public void SerializeTests()
     {
-        (CssUnit test, string output)[] tests =
+        (SizeUnit test, string output)[] tests =
         [
-            (new(CssUnitType.Centimeter, -2.3), "-2.3cm"),
-            (new(CssUnitType.Millimeter, 3.3), "3.3mm"),
-            (new(CssUnitType.QuarterMillimeter, 1), "1q"),
-            (new(CssUnitType.Inch, 100), "100in"),
-            (new(CssUnitType.Pica, 1.2), "1.2pc"),
-            (new(CssUnitType.Point, 1.2), "1.2pt"),
-            (new(CssUnitType.Percentage, 1.2), "1.2%"),
-            (new(CssUnitType.Em, 1.2), "1.2em"),
-            (new(CssUnitType.ViewHeight, 1.2), "1.2vh"),
-            (new(CssUnitType.ViewWidth, 1.2), "1.2vw"),
-            (new(CssUnitType.RelativePercentage, 1.2), "1.2rp"),
-            (new(CssUnitType.Pixel, 1.2), "1.2px")
+            (new(SizeUnitType.Centimeter, -2.3), "-2.3cm"),
+            (new(SizeUnitType.Millimeter, 3.3), "3.3mm"),
+            (new(SizeUnitType.QuarterMillimeter, 1), "1q"),
+            (new(SizeUnitType.Inch, 100), "100in"),
+            (new(SizeUnitType.Pica, 1.2), "1.2pc"),
+            (new(SizeUnitType.Point, 1.2), "1.2pt"),
+            (new(SizeUnitType.Percentage, 1.2), "1.2%"),
+            (new(SizeUnitType.Em, 1.2), "1.2em"),
+            (new(SizeUnitType.ViewHeight, 1.2), "1.2vh"),
+            (new(SizeUnitType.ViewWidth, 1.2), "1.2vw"),
+            (new(SizeUnitType.RelativePercentage, 1.2), "1.2rp"),
+            (new(SizeUnitType.Pixel, 1.2), "1.2px")
         ];
 
         foreach(var (test, output) in tests)
@@ -86,7 +85,7 @@ public class CssUnitUtilityTests : TestSetup
 
         foreach(var (test, output, isWidth) in tests)
         {
-            var card = CssUnit.Parse(test);
+            var card = SizeUnit.Parse(test);
             var px = card.Pixels(context, isWidth);
             Assert.AreEqual(output, px, $"Pixel Test: {test}");
         }
@@ -109,13 +108,13 @@ public class CssUnitUtilityTests : TestSetup
             "1.2vw",
             "1.2rp",
             "1.2px"
-        }.Select(CssUnit.Parse);
+        }.Select(SizeUnit.Parse);
 
         foreach(var card in values)
         {
-            var testObj = new JsonCssUnitTest { Size = card };
+            var testObj = new JsonSizeUnitTest { Size = card };
             var json = JsonSerializer.Serialize(testObj);
-            var obj = JsonSerializer.Deserialize<JsonCssUnitTest>(json);
+            var obj = JsonSerializer.Deserialize<JsonSizeUnitTest>(json);
 
             Assert.AreEqual(card.ToString(), obj?.Size?.Serialize(), $"Json Test: {card}");
         }
@@ -124,17 +123,17 @@ public class CssUnitUtilityTests : TestSetup
     [TestMethod]
     public void JsonNullTests()
     {
-        var testObj = new JsonCssUnitTest { Size = null };
+        var testObj = new JsonSizeUnitTest { Size = null };
         var json = JsonSerializer.Serialize(testObj);
-        var obj = JsonSerializer.Deserialize<JsonCssUnitTest>(json);
+        var obj = JsonSerializer.Deserialize<JsonSizeUnitTest>(json);
 
         Assert.IsNotNull(obj, "Json Null Test - Parent");
         Assert.IsNull(obj.Size, "Json Null Test - Value");
     }
 
-    internal class JsonCssUnitTest
+    internal class JsonSizeUnitTest
     {
         [JsonPropertyName("size")]
-        public CssUnit? Size { get; set; }
+        public SizeUnit? Size { get; set; }
     }
 }

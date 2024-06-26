@@ -33,5 +33,5 @@ public class LoadedCard
     /// <summary>
     /// All of the elements from the AST template
     /// </summary>
-    public List<AstElement> Elements { get; set; } = [];
+    public List<AstElement> Elements { get; } = [];
 }

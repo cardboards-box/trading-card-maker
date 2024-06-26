@@ -14,6 +14,7 @@ public static class DiExtensions
     {
         return services
             .AddTransient<ICardLoaderService, CardLoaderService>()
-            .AddTransient<IFaceLoaderService, FaceLoaderService>();
+            .AddTransient<IFaceLoaderService, FaceLoaderService>()
+            .AddTransient<IElementReflectionService, ElementReflectionService>();
     }
 }

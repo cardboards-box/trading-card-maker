@@ -1,5 +1,6 @@
 ﻿namespace TradingCardMaker.Drawing.Elements.Base;
 
+using Templating.Ast;
 using Templating.Scripting;
 
 /// <summary>
@@ -12,6 +13,11 @@ public class AstValue<T>
     /// The value of the attribute
     /// </summary>
     public T? Value { get; set; } = default;
+
+    /// <summary>
+    /// The context that bound this value
+    /// </summary>
+    public AstAttribute? Context { get; set; }
 
     /// <summary>
     /// The bind expression

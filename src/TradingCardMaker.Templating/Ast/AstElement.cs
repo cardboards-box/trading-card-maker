@@ -36,12 +36,12 @@ public class AstElement
     public AstAttribute[] Attributes { get; set; } = [];
 
     /// <summary>
-    /// Any children element (only applicable if <see cref="Type"/> is <see cref="AstElementType.Children"/>)"/>
+    /// Any children element (only applicable if <see cref="Type"/> is <see cref="AstElementType.Children"/>)
     /// </summary>
     public AstElement[] Children { get; set; } = [];
 
     /// <summary>
-    /// The text content of the element (only applicable if <see cref="Type"/> is <see cref="AstElementType.Text"/>)"/>
+    /// The text content of the element (only applicable if <see cref="Type"/> is <see cref="AstElementType.Text"/>)
     /// </summary>
     public string? Value { get; set; }
 

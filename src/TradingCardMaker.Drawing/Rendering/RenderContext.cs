@@ -26,7 +26,7 @@ public class RenderContext
     /// <summary>
     /// Adds a scope to the stack
     /// </summary>
-    /// <param name="scope"></param>
+    /// <param name="scope">The render scope to add</param>
     public void AddScope(RenderScope scope)
     {
         ScopeStack.Add(scope);
@@ -48,6 +48,14 @@ public class RenderContext
     /// <param name="expression"></param>
     public void SetScope(ExpressionEvaluator expression)
     {
+        expression.SetContext(new Dictionary<string, object>
+        {
+            ["set"] = CardSet,
+            ["card"] = Card,
+            ["scope"] = ScopeStack,
+            ["frame"] = CardSet.CurrentFrame,
+        });
+
         foreach (var scope in ScopeStack)
             expression.SetContext(scope.Variables);
     }

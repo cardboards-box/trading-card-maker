@@ -5,4 +5,5 @@ return await new ServiceCollection()
     .AddDrawing()
     .AddModels()
     .AddTemplating()
+    .AddSerilog()
     .Cli(c => c.Add<TestVerb>());

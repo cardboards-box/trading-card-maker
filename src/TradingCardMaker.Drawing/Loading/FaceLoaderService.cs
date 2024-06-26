@@ -32,7 +32,8 @@ public interface IFaceLoaderService
 
 internal class FaceLoaderService(
     IFileResolverService _resolver,
-    IAstParserService _parser) : IFaceLoaderService
+    IAstParserService _parser,
+    IElementReflectionService _elements) : IFaceLoaderService
 {
     public async Task<LoadedCard> Load(IOPath path, LoadedCardSet set, AstConfig config)
     {
@@ -67,9 +68,9 @@ internal class FaceLoaderService(
 
     public static void AddStandardContext(ScriptRunner runner)
     {
-        runner
-            .AddModule("drawing", Drawing.Register)
-            .AddModule("context", Context.Register);
+        runner.AddModule("system", t => t
+            .ExportType<Drawing>()
+            .ExportType<Context>());
     }
 
     public static ScriptRunner? GenerateRunner(LoadedCard card, LoadedCardSet set)
@@ -181,13 +182,17 @@ export function main(args) {
         return true;
     }
 
-    public static void HandleTemplate(LoadedCard card, AstElement element)
+    public void HandleTemplate(LoadedCard card, AstElement element)
     {
         if (card.Template.Count != 0)
             throw new InvalidOperationException(
                 "Template has already been loaded for card: " +
                 element.ExceptionString());
 
+        foreach (var child in element.Children)
+            card.Elements.Add(child);
 
+        foreach (var template in _elements.BindTemplates(element.Children, true))
+            card.Template.Add(template);
     }
 }

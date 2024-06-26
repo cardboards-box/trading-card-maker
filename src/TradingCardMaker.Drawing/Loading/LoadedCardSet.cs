@@ -47,5 +47,10 @@ public class LoadedCardSet
     /// <summary>
     /// Any variables that can be used in the faces
     /// </summary>
-    public Dictionary<string, object?> Variables { get; set; } = [];
+    public Dictionary<string, object?> Variables { get; } = [];
+
+    /// <summary>
+    /// The current frame number
+    /// </summary>
+    public int CurrentFrame { get; set; } = 0;
 }

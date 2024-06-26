@@ -1,9 +1,7 @@
-﻿using Jint.Runtime.Modules;
-
-namespace TradingCardMaker.Drawing.Utilities;
+﻿namespace TradingCardMaker.Drawing.Utilities;
 
 using Core.SizeUnit;
-using TradingCardMaker.Drawing.Loading;
+using Loading;
 
 public class Drawing(
     LoadedCardSet _context) : IUtility
@@ -32,10 +30,5 @@ public class Drawing(
         var ctx = _context.Original.GetContext();
         var size = UnitContext(value, ctx, false);
         return ctx.Root.Height - size;
-    }
-
-    public static void Register(ModuleBuilder builder)
-    {
-        builder.ExportType<Drawing>();
     }
 }

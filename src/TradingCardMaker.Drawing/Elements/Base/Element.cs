@@ -1,5 +1,6 @@
 ﻿namespace TradingCardMaker.Drawing.Elements.Base;
 
+using Loading;
 using Templating.Ast;
 
 /// <summary>
@@ -14,6 +15,11 @@ public abstract class Element : IElement
     /// </summary>
     /// <remarks>This can be used to find the original position of the element within AST</remarks>
     public AstElement? Context { get; set; }
+
+    /// <summary>
+    /// The <see cref="ReflectedElement"/> information for this element
+    /// </summary>
+    public ReflectedElement? Reflected { get; set; }
 
     /// <summary>
     /// The tag name the element is represented by in the AST

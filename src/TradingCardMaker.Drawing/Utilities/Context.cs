@@ -1,7 +1,6 @@
-﻿using Jint.Runtime.Modules;
-using TradingCardMaker.Drawing.Loading;
+﻿namespace TradingCardMaker.Drawing.Utilities;
 
-namespace TradingCardMaker.Drawing.Utilities;
+using Loading;
 
 public class Context(
     LoadedCardSet _context) : IUtility
@@ -11,10 +10,5 @@ public class Context(
         return _context.Variables
             .TryGetValue(name, out var value)
             ? value : null;
-    }
-
-    public static void Register(ModuleBuilder builder)
-    {
-        builder.ExportType<Context>();
     }
 }

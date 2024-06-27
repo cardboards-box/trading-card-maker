@@ -1,6 +1,7 @@
 ﻿namespace TradingCardMaker.Drawing;
 
 using Loading;
+using Rendering;
 
 /// <summary></summary>
 public static class DiExtensions
@@ -13,6 +14,7 @@ public static class DiExtensions
     public static IServiceCollection AddDrawing(this IServiceCollection services)
     {
         return services
+            .AddTransient<ISvgService, SvgService>()
             .AddTransient<ICardLoaderService, CardLoaderService>()
             .AddTransient<IFaceLoaderService, FaceLoaderService>()
             .AddTransient<IElementReflectionService, ElementReflectionService>();
